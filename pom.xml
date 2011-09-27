@@ -36,6 +36,33 @@
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/gravatar-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/gravatar-plugin</url>
   </scm>
+
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>animal-sniffer-maven-plugin</artifactId>
+	<version>1.7</version>
+	<configuration>
+	  <signature>
+	    <groupId>org.codehaus.mojo.signature</groupId>
+	    <artifactId>java15</artifactId>
+	    <version>1.0</version>
+	  </signature>
+	</configuration>
+	<executions>
+	  <execution>
+	    <id>java.1.5.check</id>
+	    <phase>verify</phase>
+	    <goals>
+	      <goal>check</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
+
   
   <dependencies>
     <dependency>
@@ -43,24 +70,24 @@
       <artifactId>gravatar4java</artifactId> 
       <version>1.1</version> 
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit-dep</artifactId>
       <version>4.8.2</version>
       <scope>test</scope>
-    </dependency-->
-    <!--dependency>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <version>1.3.RC2</version>
       <scope>test</scope>
-    </dependency-->
-    <!--dependency>
+    </dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>1.9.0-rc1</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
   </dependencies>
 </project>
 
