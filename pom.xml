@@ -11,7 +11,9 @@
   <artifactId>gravatar</artifactId>
   <version>1.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
-  <name>Gravatar</name>
+  
+  <name>Jenkins Gravatar plugin</name>
+  <description>This plugin shows Gravatar avatar images for Jenkins users.</description>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Gravatar+Plugin</url>
   
   <licenses>
@@ -31,11 +33,28 @@
     </developer>
   </developers>
   
+  <contributors>
+    <contributor>
+      <name>David M. Carr</name>
+      <email>david@carrclan.us</email>
+      <timezone>-5</timezone>
+    </contributor>
+  </contributors>
+  
   <scm>
     <connection>scm:git:ssh://github.com/jenkinsci/gravatar-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/gravatar-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/gravatar-plugin</url>
   </scm>
+  
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.jenkins-ci.org/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+Jenkins+AND+component+%3D+gravatar+AND+resolution+%3D+Unresolved</url>
+  </issueManagement>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <build>
     <plugins>

@@ -36,7 +36,7 @@ import hudson.tasks.Mailer;
 import hudson.tasks.Mailer.UserProperty;
 
 /**
- * UserAvatarResolver that returns gravatar image urls for Jenkins users.
+ * UserAvatarResolver that returns Gravatar image URLs for Jenkins users.
  */
 @Extension
 public class UserGravatarResolver extends UserAvatarResolver {
