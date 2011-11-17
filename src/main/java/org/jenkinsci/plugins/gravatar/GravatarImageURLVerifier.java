@@ -37,34 +37,35 @@ import de.bripkens.gravatar.Gravatar;
  */
 class GravatarImageURLVerifier {
 
+    private final Gravatar gravatar = new Gravatar();
+
+    GravatarImageURLVerifier() {
+        gravatar.setSize(50).setStandardDefaultImage(DefaultImage.HTTP_404);
+    }
     /**
      * Verifies if the email has an Gravatar
      * @param email email address
      * @return true, if there is a Gravatar for the emails; false, otherwise.
      */
     public boolean verify(String email) {
-        String imageURL = new Gravatar()
-            .setSize(100)
-            .setStandardDefaultImage(DefaultImage.HTTP_404)
-            .getUrl(email);
+        String imageURL = gravatar.getUrl(email);
         
+        boolean gravtarExistsForEmail = false;
         try {
             URL url = new URL(imageURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5*1000);
             connection.setReadTimeout(5*1000);
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("HEAD");
             connection.connect();
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return true;
-            }
+            gravtarExistsForEmail = (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
             connection.disconnect();
         } catch (MalformedURLException e) {
             LOGGER.warning("Gravatar URL is malformed, " + imageURL);
         } catch (IOException e) {
             LOGGER.fine("Could not connect to the Gravatar URL, " + e);
         }
-        return false;
+        return gravtarExistsForEmail;
     }
     
     private static final Logger LOGGER = Logger.getLogger(GravatarImageURLVerifier.class.getName());
