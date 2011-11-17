@@ -24,8 +24,9 @@
 package org.jenkinsci.plugins.gravatar;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
+
+import jenkins.model.Jenkins;
 
 import de.bripkens.gravatar.Gravatar;
 
@@ -41,16 +42,22 @@ import hudson.tasks.Mailer.UserProperty;
 @Extension
 public class UserGravatarResolver extends UserAvatarResolver {
     
-    private GravatarImageURLVerifier gravatarImageURLVerifier;
-    private Map<String, String> cachedGravatarImageURLs;
+    private final Gravatar gravatar = new Gravatar();
+    private final GravatarImageURLVerifier gravatarImageURLVerifier;
+    private HashMap<String, Boolean> emailHasGravatarMap;
 
     public UserGravatarResolver() {
-        this(new GravatarImageURLVerifier());
+        this(new GravatarImageURLVerifier(), Jenkins.getInstance().isRootUrlSecure());
+    }
+
+    public UserGravatarResolver(GravatarImageURLVerifier urlVerifier) {
+        this(urlVerifier, false);
     }
     
-    public UserGravatarResolver(GravatarImageURLVerifier urlVerifier) {
+    public UserGravatarResolver(GravatarImageURLVerifier urlVerifier, boolean isUsingHttps) {
         gravatarImageURLVerifier = urlVerifier;
-        cachedGravatarImageURLs = new HashMap<String, String>();
+        emailHasGravatarMap = new HashMap<String, Boolean>();
+        gravatar.setHttps(isUsingHttps);
     }
 
     @Override
@@ -59,24 +66,29 @@ public class UserGravatarResolver extends UserAvatarResolver {
         if (mailProperty != null) {
             String email = mailProperty.getAddress();
             if (email != null) {
-                return getGravatarUrlFor(email, width, height);
+                if (checkIfGravatarExistsFor(email)) {
+                    return gravatar.setSize(width).getUrl(email);
+                }
             }
         }
         return null;
     }
 
-    String getGravatarUrlFor(String email, int width, int height) {
-        if (cachedGravatarImageURLs.containsKey(email)) {
-            return cachedGravatarImageURLs.get(email);
+    boolean checkIfGravatarExistsFor(String email) {
+        if (emailHasGravatarMap.containsKey(email)) {
+            return emailHasGravatarMap.get(email).booleanValue();
         }
-        String gravatarImageURL = new Gravatar()
-            .setSize(Math.max(width,  height))
-            .getUrl(email);
-        if (gravatarImageURLVerifier.verify(email)) {
-            cachedGravatarImageURLs.put(email, gravatarImageURL);
-            return gravatarImageURL;
-        }
-        return null;
+        boolean emailHasGravatar = gravatarImageURLVerifier.verify(email);
+        emailHasGravatarMap.put(email, (emailHasGravatar ? Boolean.TRUE : Boolean.FALSE));
+        return emailHasGravatar;
+    }
+
+    HashMap<String, Boolean> getEmailHasGravatarMap() {
+        return emailHasGravatarMap;
+    }
+
+    void setEmailHasGravatarMap(HashMap<String, Boolean> emailHasGravatarMap) {
+        this.emailHasGravatarMap = emailHasGravatarMap;
     }
     
     private static final Logger LOGGER = Logger.getLogger(UserGravatarResolver.class.getName());

@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.*;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,23 +43,23 @@ public class UserGravatarResolverTest {
     public void assertResolverVerifiesThatGravatarExists() {
         UserGravatarResolver resolver = new UserGravatarResolver(urlVerifier);
         when(urlVerifier.verify(anyString())).thenReturn(Boolean.TRUE);
-        assertThat(resolver.getGravatarUrlFor("eramfelt@gmail.com", 120,120), CoreMatchers.startsWith("http://www.gravatar.com/avatar/e97d631e4b7f9afaf78fc86026948745.jpg?s=120"));
+        assertThat(resolver.checkIfGravatarExistsFor("eramfelt@gmail.com"), is(true));
     }
 
     @Test
     public void assertResolverReturnsNullForNonExistingGravatar() {
         UserGravatarResolver resolver = new UserGravatarResolver(urlVerifier);
         when(urlVerifier.verify(anyString())).thenReturn(Boolean.FALSE);
-        assertThat(resolver.getGravatarUrlFor("MyEmailAddress@example.com", 120,120), is(nullValue()));   
+        assertThat(resolver.checkIfGravatarExistsFor("eramfelt@gmail.com"), is(false));
     }
 
     @Test
     public void assertResolverOnlyVerifiesAnImageUrlOnce() {
         UserGravatarResolver resolver = new UserGravatarResolver(urlVerifier);
         when(urlVerifier.verify(anyString())).thenReturn(Boolean.TRUE);
-        resolver.getGravatarUrlFor("eramfelt@gmail.com", 120,120);
-        resolver.getGravatarUrlFor("eramfelt@gmail.com", 240,190);
-        resolver.getGravatarUrlFor("eramfelt@gmail.com", 912,102);
+        resolver.checkIfGravatarExistsFor("eramfelt@gmail.com");
+        resolver.checkIfGravatarExistsFor("eramfelt@gmail.com");
+        resolver.checkIfGravatarExistsFor("eramfelt@gmail.com");
         verify(urlVerifier, times(1)).verify("eramfelt@gmail.com");
     }
 }
