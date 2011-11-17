@@ -33,14 +33,14 @@ import de.bripkens.gravatar.DefaultImage;
 import de.bripkens.gravatar.Gravatar;
 
 /**
- * Class that verifies that a gravatar exists for an email.
+ * Class that verifies that a Gravatar exists for an email.
  */
 class GravatarImageURLVerifier {
 
     /**
-     * Verifies if the email has an gravatar
+     * Verifies if the email has an Gravatar
      * @param email email address
-     * @return true, if there is a gravatar for the emails; false, otherwise.
+     * @return true, if there is a Gravatar for the emails; false, otherwise.
      */
     public boolean verify(String email) {
         String imageURL = new Gravatar()
